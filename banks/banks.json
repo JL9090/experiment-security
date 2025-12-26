@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "banks": [
+    {
+      "id": "sy0701",
+      "label": "SY0-701 (1211Q) Bank",
+      "url": "banks/sy0-701-bank.json",
+      "count": 1211
+    }
+  ]
+}

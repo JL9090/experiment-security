@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Security+ SY0-701 Quizzer</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#06121f" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <meta name="color-scheme" content="light dark">
+</head>
+<body>
+  <header class="site-header" role="banner">
+    <div class="brand">
+      <img src="logo.png" alt="Cybersecurity logo" class="brand__emblem" />
+      <div class="brand__text">
+        <h1 class="brand__title">Security+ SY0-701 Quizzer</h1>
+        <div class="brand__subtitle">500 questions • full explanations • domain targeting</div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button id="themeBtn" class="btn btn-secondary" aria-pressed="false" title="Toggle light/dark theme">🌙</button>
+    </div>
+  </header>
+
+  <main class="container" id="main" tabindex="-1">
+    <img src="banner.jpg" alt="Cybersecurity study banner" class="banner" />
+
+    <section class="panel" aria-labelledby="settingsTitle">
+      <h2 id="settingsTitle">Study Settings</h2>
+      <div class="settings-grid">
+
+        <div class="filter-block" aria-label="Domain selection">
+          <div class="filter-title">Domains</div>
+          <button class="btn btn-secondary" id="openDomainModal" type="button">Select domains</button>
+          <div class="small-muted" id="domainSummary">All domains selected</div>
+        </div>
+
+        <label class="inline">
+          Difficulty:
+          <select id="difficultySelect">
+            <option value="ALL" selected>All</option>
+            <option value="Easy">Easy</option>
+            <option value="Medium">Medium</option>
+            <option value="Hard">Hard</option>
+          </select>
+        </label>
+
+        <label class="switch">
+          <input type="checkbox" id="shuffle">
+          <span>Shuffle</span>
+        </label>
+
+        <label class="inline">
+          Seed:
+          <input type="text" id="seedInput" placeholder="(optional)" />
+        </label>
+
+        <label class="switch">
+          <input type="checkbox" id="favoritesOnly">
+          <span>Favorites Only</span>
+        </label>
+
+        <label class="switch">
+          <input type="checkbox" id="feedback" checked>
+          <span>Immediate feedback</span>
+        </label>
+
+        <label class="switch">
+          <input type="checkbox" id="timerToggle">
+          <span>Timer</span>
+        </label>
+
+        <label class="switch">
+          <input type="checkbox" id="examMode">
+          <span>Exam Mode</span>
+        </label>
+
+        <label class="inline">
+          Questions:
+          <input type="number" id="questionCount" value="20" min="1" max="500" inputmode="numeric" />
+        </label>
+
+<div class="filter-block" aria-label="Question range selection">
+  <div class="filter-title">Question Range</div>
+
+  <label class="inline" style="justify-content:space-between;">
+    Quick ranges:
+    <select id="rangePreset" style="min-width: 220px;"></select>
+  </label>
+
+  <div class="range-row" style="margin-top:8px;">
+    <input type="number" id="rangeStart" min="1" inputmode="numeric" placeholder="Start (e.g., 100)" />
+    <span class="range-dash">–</span>
+    <input type="number" id="rangeEnd" min="1" inputmode="numeric" placeholder="End (e.g., 150)" />
+    <button class="btn btn-secondary" id="clearRangeBtn" type="button">All</button>
+  </div>
+
+  <div class="small-muted" id="rangeSummary" style="margin-top:6px;">All questions</div>
+</div>
+
+
+        <div class="import-block" aria-label="Question bank selection">
+          <div class="filter-title">Question Bank</div>
+
+          <label class="inline" style="justify-content:space-between;">
+            Select bank:
+            <select id="bankSelect" style="min-width: 220px;"></select>
+          </label>
+          <div class="small-muted" style="margin-top:6px;">
+            The dropdown is populated from <strong>/banks/banks.json</strong> in your GitHub repo.
+            To add a new bank later, upload a new bank JSON into <strong>/banks/</strong> and add an entry to <strong>banks.json</strong>.
+          </div>
+
+          <div class="settings-actions" style="margin-top:10px;">
+            <button class="btn btn-secondary" id="loadSelectedBankBtn" type="button">Load Selected Bank</button>
+            <button class="btn btn-secondary" id="clearBankBtn" type="button">Use Embedded Bank</button>
+          </div>
+
+          <details style="margin-top:10px;">
+            <summary class="small-muted">Advanced: Import a bank file from your computer (CSV or JSON)</summary>
+            <div style="margin-top:10px;">
+              <label class="inline" style="justify-content:space-between;">
+                Import Bank File:
+                <input type="file" id="importBank" accept=".csv,.json,application/json,text/csv" />
+              </label>
+              <div class="small-muted" style="margin-top:6px;">
+                Importing saves the bank locally in your browser. Repo banks (dropdown) are recommended for easy updates.
+              </div>
+              <div class="settings-actions" style="margin-top:10px;">
+                <button class="btn btn-secondary" id="applyImportBtn" type="button">Load Imported Bank</button>
+              </div>
+            </div>
+          </details>
+
+          <div id="bankStatus" class="small-muted" style="margin-top:8px;"></div>
+        </div>
+
+        <label class="inline" id="timerMinutesWrap" hidden>
+          Minutes:
+          <input type="number" id="timerMinutes" value="20" min="1" max="240" inputmode="numeric" />
+        </label>
+
+        <div class="settings-actions">
+          <button class="btn" id="startBtn">Start Quiz</button>
+          <button class="btn btn-secondary" id="startFlashBtn">Start Flashcards</button>
+          <button class="btn btn-secondary" id="resetBtn">Reset</button>
+        </div>
+      </div>
+    </section>
+
+    <div id="progressWrap" class="progress-wrap" hidden>
+      <div id="progressBar" class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
+      <div id="timer" class="timer" aria-live="polite"></div>
+    </div>
+
+    <section id="quizContainer" class="quiz"></section>
+
+    <section class="panel" id="analyticsPanel">
+      <h2>Results Analytics</h2>
+      <div id="analyticsContent" class="analytics"></div>
+    </section>
+
+    <footer class="footer">
+      <p class="disclaimer">For study/training use only.</p>
+    </footer>
+  </main>
+
+  <!-- Domain selection modal -->
+  <dialog id="domainModal" class="modal" aria-labelledby="domainModalTitle">
+    <div class="modal__card">
+      <h3 id="domainModalTitle">Select domains to test</h3>
+      <p class="small-muted" style="margin-top:-4px;">Pick one or more domains. If none are selected, the quiz will use all domains.</p>
+
+      <div class="chip-row" style="margin:10px 0 12px;">
+        <label class="chip"><input type="checkbox" id="domainAll" checked>All</label>
+        <label class="chip"><input type="checkbox" id="domain1">D1</label>
+        <label class="chip"><input type="checkbox" id="domain2">D2</label>
+        <label class="chip"><input type="checkbox" id="domain3">D3</label>
+        <label class="chip"><input type="checkbox" id="domain4">D4</label>
+        <label class="chip"><input type="checkbox" id="domain5">D5</label>
+      </div>
+
+      <div class="small-muted" id="domainHint">Tip: uncheck All to target specific domains.</div>
+
+      <div class="modal__actions">
+        <button class="btn" id="applyDomainModal" type="button">Apply</button>
+        <button class="btn btn-secondary" id="closeDomainModal" type="button">Close</button>
+      </div>
+    </div>
+  </dialog>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('sw.js'));
+    }
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>
