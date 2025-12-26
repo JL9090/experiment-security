@@ -8,7 +8,7 @@
       "DomainName": "Security Operations",
       "Difficulty": "Medium",
       "Objective": "",
-      "Question": "AX security analyst is reviewing alerts related to abnormal outbound traffic from a user workstation. The analyst needs to determine which process initiated the connection.\nWhich of the following data sources would BEST provide this information?",
+      "Question": "A security analyst is reviewing alerts related to abnormal outbound traffic from a user workstation. The analyst needs to determine which process initiated the connection.\nWhich of the following data sources would BEST provide this information?",
       "A": "Network flow logs",
       "B": "Firewall logs",
       "C": "Endpoint logs",

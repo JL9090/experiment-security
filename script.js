@@ -189,10 +189,11 @@ function wireEvents(){
         if(els.rangeEnd) els.rangeEnd.value=m[2];
       }
     }
+    _rangeAutoCount = true;
     updateAvailableHint();
   });
-  els.rangeStart?.addEventListener("input", ()=>{ if(els.rangePreset) els.rangePreset.value=""; updateAvailableHint(); });
-  els.rangeEnd?.addEventListener("input", ()=>{ if(els.rangePreset) els.rangePreset.value=""; updateAvailableHint(); });
+  els.rangeStart?.addEventListener("input", ()=>{ if(els.rangePreset) els.rangePreset.value=""; _rangeAutoCount = true; updateAvailableHint(); });
+  els.rangeEnd?.addEventListener("input", ()=>{ if(els.rangePreset) els.rangePreset.value=""; _rangeAutoCount = true; updateAvailableHint(); });
   els.clearRangeBtn?.addEventListener("click", ()=>{
     if(els.rangeStart) els.rangeStart.value="";
     if(els.rangeEnd) els.rangeEnd.value="";
@@ -540,6 +541,8 @@ function applyDomainDifficultyFilters(pool){
 
 
 let _rangePresetTotal = 0;
+let _rangeAutoCount = false;
+
 
 function rebuildRangePresets(total){
   if(!els.rangePreset) return;
@@ -548,7 +551,8 @@ function rebuildRangePresets(total){
   optAll.value="";
   optAll.textContent = `All (1-${total})`;
   els.rangePreset.appendChild(optAll);
-  const step=100;
+  // Use 50-question blocks so it's easier to work through the (large) bank in chunks.
+  const step=50;
   for(let s=1;s<=total;s+=step){
     const e=Math.min(total, s+step-1);
     const opt=document.createElement("option");
@@ -612,6 +616,17 @@ function updateAvailableHint(){
   updateBankStatus();
   if(!els.bankStatus) return;
   els.bankStatus.textContent += ` • After filters: ${pool.length}`;
+  // If the user just changed the range controls, auto-set the question count
+  // to the size of the selected range (capped by the filtered pool).
+  if(_rangeAutoCount){
+    const r = getSelectedRange();
+    if(r && pool.length>0){
+      const desired = Math.max(1, Math.min(pool.length, (r.end - r.start + 1)));
+      els.qCount.value = String(desired);
+    }
+    _rangeAutoCount = false;
+  }
+
   // Clamp question count to the filtered pool size
   if(+els.qCount.value>pool.length && pool.length>0) els.qCount.value=pool.length;
 }
